@@ -1,0 +1,19 @@
+return {
+  summary = "Free-form, in-character conversations with ordinary NPCs through NVIDIA NIM.",
+  author = "OpenAI Codex",
+  tags = { "ai", "dialogue", "nvidia-nim", "network" },
+  differences = {
+    changed = { "ordinary NPC dialogue opens a free-form chat prompt" },
+    added = { "keyboard and gamepad text entry", "short per-NPC conversation memory" },
+    known = {
+      "requires desktop curl and network access",
+      "story scripts, services, item objects, unbeaten trainers and static Pokemon stay vanilla",
+      "model output is generated remotely and can be inaccurate",
+    },
+  },
+  credits = {
+    { who = "NVIDIA", for_ = "NIM hosted inference API" },
+    { who = "pret/pokered", for_ = "the original NPC dialogue used as character context" },
+  },
+  compat = { engine = ">=0.0.0-0 <2.0.0", modApi = 2 },
+}

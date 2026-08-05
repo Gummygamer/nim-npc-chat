@@ -1,0 +1,17 @@
+{
+  "id": "nim_npc_chat",
+  "name": "NVIDIA NIM NPC Chat",
+  "version": "1.0.0",
+  "api": 2,
+  "entry": "main.lua",
+  "profile": "content",
+  "category": "MECHANIC",
+  "game_version": ">=0.0.0-0 <2.0.0",
+  "priority": 100,
+  "dependencies": [],
+  "optional_dependencies": [],
+  "conflicts": [],
+  "permissions": ["network", "engine_internals"],
+  "affects_link": false,
+  "description": "Lets the player type questions to ordinary NPCs and receives in-character replies from NVIDIA NIM."
+}
