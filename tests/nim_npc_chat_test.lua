@@ -21,6 +21,12 @@ T.check(payload.messages[1].content:find("only as background context", 1, true) 
   "original dialogue is context rather than a scripted opening line")
 T.eq(payload.messages[#payload.messages].content, "What is new?", "player text is last")
 T.eq(payload.stream, false, "worker requests one non-streamed JSON response")
+T.eq(payload.model, "minimaxai/minimax-m3",
+  "default model is an instruct model the hosted NIM still serves")
+T.check(payload.model ~= "meta/llama-3.1-8b-instruct",
+  "default model is not the retired Llama 3.1 8B that answers 410 Gone")
+T.check(payload.model ~= "mistralai/mistral-7b-instruct-v0.3",
+  "default model is not the Mistral 7B whose function answers 404 Not found")
 
 local reply, err = Client.parseCompletion(
   '{"choices":[{"message":{"role":"assistant","content":"Welcome home, trainer!"}}]}')

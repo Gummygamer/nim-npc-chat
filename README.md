@@ -26,7 +26,12 @@ START sends). Escape or EXIT cancels.
 
 The default hosted endpoint is
 `https://integrate.api.nvidia.com/v1/chat/completions`, using
-`meta/llama-3.1-8b-instruct`. Override either before launch when needed:
+`minimaxai/minimax-m3`. Both earlier defaults are unusable:
+`meta/llama-3.1-8b-instruct` reached end of life on the hosted NIM API and
+answers `410 Gone`, while `mistralai/mistral-7b-instruct-v0.3` is still
+listed by `/v1/models` but answers `404 Function ... Not found for account`
+because its backing function is gone. Override either value before launch
+when needed:
 
 ```powershell
 $env:NVIDIA_NIM_MODEL = "another/model-id"

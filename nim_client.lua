@@ -4,7 +4,14 @@ local HostShell = require("src.core.HostShell")
 local Client = {}
 
 Client.DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1"
-Client.DEFAULT_MODEL = "meta/llama-3.1-8b-instruct"
+-- meta/llama-3.1-8b-instruct reached end of life on the hosted NIM API on
+-- 2026-08-26 and now answers 410 Gone. Its replacement,
+-- mistralai/mistral-7b-instruct-v0.3, is still listed by /v1/models but its
+-- backing function is gone, so it answers 404 Function ... Not found for
+-- account. minimaxai/minimax-m3 is a non-reasoning instruct model the same
+-- endpoint does serve: same request shape, plain content in
+-- choices[1].message.content, and short NPC answers inside the 60s budget.
+Client.DEFAULT_MODEL = "minimaxai/minimax-m3"
 
 local function trim(s)
   return (tostring(s or ""):gsub("^%s+", ""):gsub("%s+$", ""))
