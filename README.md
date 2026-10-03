@@ -26,11 +26,12 @@ START sends). Escape or EXIT cancels.
 
 The default hosted endpoint is
 `https://integrate.api.nvidia.com/v1/chat/completions`, using
-`minimaxai/minimax-m3`. Both earlier defaults are unusable:
-`meta/llama-3.1-8b-instruct` reached end of life on the hosted NIM API and
-answers `410 Gone`, while `mistralai/mistral-7b-instruct-v0.3` is still
-listed by `/v1/models` but answers `404 Function ... Not found for account`
-because its backing function is gone. Override either value before launch
+`google/gemma-4-31b-it`. Earlier defaults are unusable:
+`meta/llama-3.1-8b-instruct` answers `410 Gone`,
+`mistralai/mistral-7b-instruct-v0.3` answers `404 Function ... Not found for
+account`, and `minimaxai/minimax-m3` reached end of life on 2026-09-09. Avoid
+reasoning models such as `openai/gpt-oss-20b`: at this mod's 96-token budget
+they spend it all on reasoning and return no dialogue. Override either value before launch
 when needed:
 
 ```powershell

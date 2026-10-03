@@ -11,7 +11,12 @@ Client.DEFAULT_BASE_URL = "https://integrate.api.nvidia.com/v1"
 -- account. minimaxai/minimax-m3 is a non-reasoning instruct model the same
 -- endpoint does serve: same request shape, plain content in
 -- choices[1].message.content, and short NPC answers inside the 60s budget.
-Client.DEFAULT_MODEL = "minimaxai/minimax-m3"
+-- minimaxai/minimax-m3 reached end of life on 2026-09-09 and answers "has
+-- reached its end of life". openai/gpt-oss-20b is served but is a reasoning
+-- model: at this request's 96-token budget it spends everything on reasoning
+-- and returns no content. google/gemma-4-31b-it is a non-reasoning instruct
+-- model with plain content in choices[1].message.content.
+Client.DEFAULT_MODEL = "google/gemma-4-31b-it"
 
 local function trim(s)
   return (tostring(s or ""):gsub("^%s+", ""):gsub("%s+$", ""))

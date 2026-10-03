@@ -21,7 +21,7 @@ T.check(payload.messages[1].content:find("only as background context", 1, true) 
   "original dialogue is context rather than a scripted opening line")
 T.eq(payload.messages[#payload.messages].content, "What is new?", "player text is last")
 T.eq(payload.stream, false, "worker requests one non-streamed JSON response")
-T.eq(payload.model, "minimaxai/minimax-m3",
+T.eq(payload.model, "google/gemma-4-31b-it",
   "default model is an instruct model the hosted NIM still serves")
 T.check(payload.model ~= "meta/llama-3.1-8b-instruct",
   "default model is not the retired Llama 3.1 8B that answers 410 Gone")

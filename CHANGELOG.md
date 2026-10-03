@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed
+
+- Default `NVIDIA_NIM_MODEL` to `google/gemma-4-31b-it`; `minimaxai/minimax-m3`
+  reached end of life on 2026-09-09 and the hosted API now refuses it.
+
 ### Added
 
 - FireRed and LeafGreen support (`"games": ["gen1", "frlg"]`). The Gen 3 arm
