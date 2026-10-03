@@ -91,7 +91,8 @@ end
 local function contextText(ctx)
   local original = ascii(ctx.vanillaText or "No original line was available.", 240)
   return table.concat({
-    "You are a non-player character in the world of the original Pokemon Blue game.",
+    "You are a non-player character in the world of the original "
+      .. tostring(ctx.gameName or "Pokemon Blue") .. " game.",
     "Stay in character as a resident of " .. tostring(ctx.mapId or "KANTO") .. ".",
     "Your original game dialogue was: " .. original,
     "Use that original dialogue only as background context. Do not quote it, repeat it, or open your answer with it.",

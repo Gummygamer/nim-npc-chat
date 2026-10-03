@@ -71,3 +71,13 @@ the included wrapper:
 $env:MODKIT_LUAJIT = (Resolve-Path tools/love-luajit.cmd)
 python tools/modkit.py validate mods/nim_npc_chat --base imported
 ```
+
+
+## FireRed and LeafGreen
+
+The mod also runs on Gen1Recomp Deluxe's FireRed and LeafGreen. Press A on a
+villager as usual: when the NPC's script is nothing but small talk, a typing
+panel opens (keyboard letters, or D-pad + A on the grid, START to send, B to
+delete) and the reply appears in the normal message box. Story, trainer, shop,
+gift and Pokemon Center NPCs are left to the original game. The same
+`NVIDIA_API_KEY` / `NVIDIA_NIM_MODEL` / `NVIDIA_NIM_BASE_URL` variables apply.

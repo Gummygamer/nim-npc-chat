@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+- FireRed and LeafGreen support (`"games": ["gen1", "frlg"]`). The Gen 3 arm
+  (`gen3_chat.lua`) claims the A press through `world.talk`, reads the NPC's own
+  script and only takes over plain small talk (lock / faceplayer / message
+  boxes / release); trainers, shops, gifts, branching story scripts and
+  anything else run the original script. It types through `input.key`,
+  `input.gamepad` and `render.hud` and shows the reply in the engine's own
+  field message box.
+
 ### Changed
 
 - Default `NVIDIA_NIM_MODEL` to `minimaxai/minimax-m3`. Both earlier defaults

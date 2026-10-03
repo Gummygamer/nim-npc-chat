@@ -1,4 +1,5 @@
 local Client = require("mods.nim_npc_chat.nim_client")
+local GameVersion = require("src.core.GameVersion")
 
 local SCREEN = "NimNpcChat"
 local histories = {}
@@ -18,6 +19,15 @@ return function(mod)
   mod.options:define({
     { key = "enabled", label = "AI NPC CHAT", type = "toggle", default = true },
   })
+
+  -- FireRed / LeafGreen have no screen registry or TextBox; their arm drives
+  -- the engine's own field message box (see gen3_chat.lua).
+  if GameVersion.generation() == 3 then
+    require("mods.nim_npc_chat.gen3_chat").install(mod)
+    mod.exports.sanitizeReply = Client.sanitizeReply
+    mod.exports.buildRequest = Client.buildRequest
+    return
+  end
 
   local Chat = {}
   Chat.__index = Chat
