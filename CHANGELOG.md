@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- On-device replies on the Switch 2 port with NVIDIA Nemotron Labs Dory 1.0
+  4B (`local_llm.lua`, native `ns2text`): no network, no API key. The route
+  (local, hosted NIM, refuse) comes from `text_route.lua`, generated from
+  proved Bend laws in the port repository. Player text cannot inject chat
+  template markers.
+
 ### Changed
 
 - Default `NVIDIA_NIM_MODEL` to `google/gemma-4-31b-it`; `minimaxai/minimax-m3`

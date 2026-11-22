@@ -160,7 +160,7 @@ function Gen3Chat.install(mod)
     if not chat or chat.mode ~= "input" then return end
     local question = Client.sanitizeInput(chat.text)
     if question == "" then return end
-    if not Client.hasApiKey() then
+    if require("mods.nim_npc_chat.text_route").route(require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false) == "refuse" then
       return say("NIM needs the\nNVIDIA_API_KEY\nenvironment variable.")
     end
     if not (love.thread and love.thread.newThread and love.thread.getChannel) then

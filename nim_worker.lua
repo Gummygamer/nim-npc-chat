@@ -15,7 +15,19 @@ if not ok then
   return
 end
 
-local ran, body, err = pcall(Client.perform, requestBody, tag)
+-- Text source from the proved policy (text_route.lua, generated from
+-- Policy.bend): the on-device model first, hosted NIM with a key, else none.
+local okLocal, LocalLlm = pcall(require, "mods.nim_npc_chat.local_llm")
+local Route = require("mods.nim_npc_chat.text_route")
+local route = Route.route(okLocal and LocalLlm.available() or false, Client.hasApiKey() and true or false)
+local ran, body, err
+if route == "local" then
+  ran, body, err = pcall(LocalLlm.complete, requestBody, { seed = os.time() % 2147483647 })
+elseif route == "hosted" then
+  ran, body, err = pcall(Client.perform, requestBody, tag)
+else
+  ran, body, err = true, nil, "no text model: install the local model or set NVIDIA_API_KEY"
+end
 if not ran then
   channel:push(Client.encodeEnvelope(false, body))
 elseif body then

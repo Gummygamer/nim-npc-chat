@@ -80,7 +80,7 @@ return function(mod)
     if self.mode ~= "input" then return end
     local question = Client.sanitizeInput(self.text)
     if question == "" then return end
-    if not Client.hasApiKey() then
+    if require("mods.nim_npc_chat.text_route").route(require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false) == "refuse" then
       self:finishWith("NIM needs the\nNVIDIA_API_KEY\nenvironment variable.")
       return
     end
