@@ -160,11 +160,13 @@ function Gen3Chat.install(mod)
     if not chat or chat.mode ~= "input" then return end
     local question = Client.sanitizeInput(chat.text)
     if question == "" then return end
-    if require("mods.nim_npc_chat.text_route").route(require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false) == "refuse" then
-      return say("NIM needs the\nNVIDIA_API_KEY\nenvironment variable.")
+    chat.route = require("mods.nim_npc_chat.text_route").route(
+      require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false)
+    if chat.route == "refuse" then
+      return say("No text model: add\nthe local model or\nset NVIDIA_API_KEY.")
     end
     if not (love.thread and love.thread.newThread and love.thread.getChannel) then
-      return say("NIM chat needs a\nLOVE build with\nthread support.")
+      return say("NPC chat needs a\nLOVE build with\nthread support.")
     end
     local history = histories[chat.npcKey] or {}
     local request = Client.buildRequest(chat.ctx, question, history)
@@ -175,13 +177,13 @@ function Gen3Chat.install(mod)
     local okThread, thread = pcall(love.thread.newThread,
       mod.path .. "/nim_worker.lua")
     if not okChannel or not channel or not okThread or not thread then
-      return say("Could not start the\nNIM network worker.")
+      return say("Could not start the\nNPC chat worker.")
     end
     local started, startErr = pcall(thread.start, thread, channelName, request, tag)
     if not started then
-      mod.log:error("NIM worker did not start: " .. tostring(startErr)
+      mod.log:error("NPC chat worker did not start: " .. tostring(startErr)
         .. " -- verify this LOVE build has thread support")
-      return say("Could not start the\nNIM network worker.")
+      return say("Could not start the\nNPC chat worker.")
     end
     chat.mode, chat.question = "waiting", question
     chat.channel, chat.thread = channel, thread
@@ -190,14 +192,16 @@ function Gen3Chat.install(mod)
   local function acceptResult(envelope)
     local body, workerErr = Client.decodeEnvelope(envelope)
     if not body then
-      mod.log:warn("NIM request failed: " .. tostring(workerErr)
+      mod.log:warn("NPC chat request failed (route " .. tostring(chat.route) .. "): " .. tostring(workerErr)
         .. " -- check NVIDIA_API_KEY, model access, and network connectivity")
+      if chat.route == "local" then return say("The local model\ncould not answer.") end
       return say("NIM could not answer.\nCheck the key, model,\nand network.")
     end
     local reply, parseErr = Client.parseCompletion(body)
     if not reply then
-      mod.log:warn("NIM response was unusable: " .. tostring(parseErr)
+      mod.log:warn("NPC chat response was unusable (route " .. tostring(chat.route) .. "): " .. tostring(parseErr)
         .. " -- try another NVIDIA_NIM_MODEL")
+      if chat.route == "local" then return say("The local model\nreturned no dialogue.") end
       return say("NIM returned no\ndialogue. Try another\nmodel.")
     end
     reply = reply:gsub("\\", "")
@@ -351,7 +355,8 @@ function Gen3Chat.install(mod)
   local function drawChat()
     if chat.mode == "waiting" then
       frame(2, 7, 26, 4)
-      text("ASKING NVIDIA NIM" .. ((chat.blink < 30) and "..." or ""), 24, 64)
+      local who = chat.route == "local" and "ASKING DORY" or "ASKING NVIDIA NIM"
+      text(who .. ((chat.blink < 30) and "..." or ""), 24, 64)
       text("PLEASE WAIT", 24, 80)
       return
     end

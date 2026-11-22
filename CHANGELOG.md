@@ -9,6 +9,8 @@
   (local, hosted NIM, refuse) comes from `text_route.lua`, generated from
   proved Bend laws in the port repository. Player text cannot inject chat
   template markers.
+- The waiting screen and messages name the model actually answering
+  ("ASKING DORY" on-device) instead of always NIM.
 
 ### Changed
 

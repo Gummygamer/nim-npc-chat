@@ -80,12 +80,14 @@ return function(mod)
     if self.mode ~= "input" then return end
     local question = Client.sanitizeInput(self.text)
     if question == "" then return end
-    if require("mods.nim_npc_chat.text_route").route(require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false) == "refuse" then
-      self:finishWith("NIM needs the\nNVIDIA_API_KEY\nenvironment variable.")
+    self.route = require("mods.nim_npc_chat.text_route").route(
+      require("mods.nim_npc_chat.local_llm").available(), Client.hasApiKey() and true or false)
+    if self.route == "refuse" then
+      self:finishWith("No text model: add\nthe local model or\nset NVIDIA_API_KEY.")
       return
     end
     if not (love.thread and love.thread.newThread and love.thread.getChannel) then
-      self:finishWith("NIM chat needs a\nLÖVE build with\nthread support.")
+      self:finishWith("NPC chat needs a\nLÖVE build with\nthread support.")
       return
     end
 
@@ -99,14 +101,14 @@ return function(mod)
     local okThread, thread = pcall(love.thread.newThread,
       mod.path .. "/nim_worker.lua")
     if not okChannel or not channel or not okThread or not thread then
-      self:finishWith("Could not start the\nNIM network worker.")
+      self:finishWith("Could not start the\nNPC chat worker.")
       return
     end
     local started, startErr = pcall(thread.start, thread, channelName, request, tag)
     if not started then
-      mod.log:error("NIM worker did not start: " .. tostring(startErr)
+      mod.log:error("NPC chat worker did not start: " .. tostring(startErr)
         .. " -- verify this LÖVE build has thread support")
-      self:finishWith("Could not start the\nNIM network worker.")
+      self:finishWith("Could not start the\nNPC chat worker.")
       return
     end
     self.mode = "waiting"
@@ -149,15 +151,17 @@ return function(mod)
   function Chat:acceptWorkerResult(envelope)
     local body, workerErr = Client.decodeEnvelope(envelope)
     if not body then
-      mod.log:warn("NIM request failed: " .. tostring(workerErr)
+      mod.log:warn("NPC chat request failed (route " .. tostring(self.route) .. "): " .. tostring(workerErr)
         .. " -- check NVIDIA_API_KEY, model access, and network connectivity")
+      if self.route == "local" then return self:finishWith("The local model\ncould not answer.") end
       self:finishWith("NIM could not answer.\nCheck the key, model,\nand network.")
       return
     end
     local reply, parseErr = Client.parseCompletion(body)
     if not reply then
-      mod.log:warn("NIM response was unusable: " .. tostring(parseErr)
+      mod.log:warn("NPC chat response was unusable (route " .. tostring(self.route) .. "): " .. tostring(parseErr)
         .. " -- try another NVIDIA_NIM_MODEL")
+      if self.route == "local" then return self:finishWith("The local model\nreturned no dialogue.") end
       self:finishWith("NIM returned no\ndialogue. Try another\nmodel.")
       return
     end
@@ -206,11 +210,11 @@ return function(mod)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("fill", 0, 0, 160, 144)
     love.graphics.setColor(0, 0, 0, 1)
-    Font.draw("NIM NPC CHAT", 8, 0)
+    Font.draw("NPC CHAT", 8, 0)
     if self.mode == "waiting" then
       Font.drawBox(1, 3, 18, 7)
       love.graphics.setColor(0, 0, 0, 1)
-      Font.draw("ASKING NVIDIA NIM", 16, 40)
+      Font.draw(self.route == "local" and "ASKING DORY" or "ASKING NVIDIA NIM", 16, 40)
       Font.draw("PLEASE WAIT" .. ((self.blink < 30) and "..." or ""), 32, 64)
       Font.draw("THE GAME IS STILL", 16, 88)
       Font.draw("RESPONSIVE.", 40, 104)
